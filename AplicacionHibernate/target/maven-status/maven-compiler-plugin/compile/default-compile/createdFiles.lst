@@ -1,0 +1,8 @@
+com\mycompany\aplicacionhibernate\MensajeDAO.class
+com\mycompany\aplicacionhibernate\UsuarioDAO.class
+com\mycompany\aplicacionhibernate\UsuarioDAOHib.class
+com\mycompany\aplicacionhibernate\AplicacionHibernate.class
+com\mycompany\aplicacionhibernate\HibernateUtil.class
+models\Mensaje.class
+models\Usuario.class
+com\mycompany\aplicacionhibernate\MensajeDAOHib.class

@@ -1,0 +1,5 @@
+module-info.class
+com\mycompany\hellofxml\SecondaryController.class
+com\mycompany\hellofxml\App.class
+com\mycompany\hellofxml\TerciaryController.class
+com\mycompany\hellofxml\PrimaryController.class

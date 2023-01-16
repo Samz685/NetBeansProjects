@@ -1,0 +1,10 @@
+Una solución que solventa el problema de la desincronización es:
+
+Crear un semaforo entre las 2 hebras para que se pongan de acuerdo y en cuando una produzca un valor la otra
+lo recoja.
+
+-Mediante un while, mientras el contador no llege a 99, ir sumando de uno en uno.
+-Cuando el valor del semaforo está en "1", la hebra1 produce un valor.
+-Cuando el valor del semaforo está en "0", la hebra2 recoge el valor y lo muestra en pantalla.
+
+Todo esto hasta que el while llege a 99 y entonces se salga y termine el programa.

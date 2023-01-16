@@ -1,0 +1,3 @@
+models\Mensaje.class
+models\Usuario.class
+com\mycompany\applicationhibernate\ApplicationHibernate.class

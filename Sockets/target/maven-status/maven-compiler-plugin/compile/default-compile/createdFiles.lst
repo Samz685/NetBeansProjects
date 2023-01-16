@@ -1,0 +1,5 @@
+com\joselara\sockets\Cliente.class
+com\joselara\sockets\Conexion.class
+com\joselara\sockets\Servidor.class
+com\joselara\sockets\MainServidor.class
+com\joselara\sockets\MainCliente.class
