@@ -101,11 +101,14 @@ public class PrimaryController implements Initializable {
         usuarios.update(usuarioActual);
         actualizarTabla();
     }
-
-    @FXML
+    
+@FXML
     private void borrar(ActionEvent event) {
-        usuarios.delete(usuarioActual);
-        usuarioActual = null;
-        actualizarTabla();
+        
+        if (usuarioActual != null) {
+            usuarios.delete(usuarioActual);
+            usuarioActual = null;
+            actualizarTabla();
+        }
     }
 }
