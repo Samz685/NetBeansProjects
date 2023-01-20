@@ -1,5 +1,7 @@
 package com.mycompany.loginfxml;
 
+import dao.PedidoDAO;
+import dao.ProductoDAO;
 import models.ClienteData;
 import java.io.IOException;
 import java.net.URL;
@@ -83,14 +85,18 @@ public class Pedidos implements Initializable {
     private Button btnEstadistica;
     @FXML
     private Button btnCarta;
+    private PedidoDAO pedidoDAO;
+    private ProductoDAO productoDAO;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
 
-        rellenarCombos();
-
         inicializarComponentes();
-
+        
+        pedidoDAO = new PedidoDAO();
+        productoDAO = new ProductoDAO();
+        
+        rellenarCombos();
         verPedidosHoy();
 
     }
@@ -158,18 +164,12 @@ public class Pedidos implements Initializable {
         Pedido p = leerFormulario();
 
         if (p != null) {
-            try ( Session s = HibernateUtil.getSessionFactory().openSession()) {
-                Transaction t = s.beginTransaction();
-                s.save(p);
-                t.commit();
 
-                verPedidosHoy();
-                detalle.setText("Pedido nuevo añadido con éxito!");
-
-                pedidoActual = p;
-
-                borrarFormulario();
-            }
+            pedidoDAO.add(p);
+            verPedidosHoy();
+            borrarFormulario();
+            detalle.setText("Pedido nuevo añadido con éxito!");
+            pedidoActual = p;
         }
     }
 
@@ -178,18 +178,11 @@ public class Pedidos implements Initializable {
 
         if ((pedidoActual != null) && pedirConfirmacion()) {
 
-            try ( Session s = HibernateUtil.getSessionFactory().openSession()) {
-                Transaction t = s.beginTransaction();
-                s.delete(pedidoActual);
-                t.commit();
-
-                pedidoActual = null;
-
-                verPedidosHoy();
-
-                borrarFormulario();
-                detalle.setText("El pedido ha sido borrado con éxito");
-            }
+            pedidoDAO.delete(pedidoActual);
+            pedidoActual = null;
+            verPedidosHoy();
+            borrarFormulario();
+            detalle.setText("El pedido ha sido borrado con éxito");
 
         }
     }
@@ -221,15 +214,10 @@ public class Pedidos implements Initializable {
             pedidoActual.setProducto(comboProducto.getValue());
             pedidoActual.setEstado(comboEstado.getValue());
 
-            try ( Session s = HibernateUtil.getSessionFactory().openSession()) {
-                Transaction t = s.beginTransaction();
-                s.update(pedidoActual);
-                t.commit();
-
-                verPedidosHoy();
-                detalle.setText("Pedido actualizado con éxito");
-
-            }
+            pedidoDAO.update(pedidoActual);
+            verPedidosHoy();
+            detalle.setText("Pedido actualizado con éxito");
+            borrarFormulario();
         }
     }
 
@@ -282,28 +270,25 @@ public class Pedidos implements Initializable {
     }
 
     public ArrayList<Producto> traerProductos() {
+
         ArrayList<Producto> productos = new ArrayList<>();
-        try ( Session s = HibernateUtil.getSessionFactory().openSession()) {
-            Query q = s.createQuery("from Producto");
-            productos = (ArrayList<Producto>) q.list();
+
+        if (productoDAO.getAll() != null) {
+            for (Producto p : productoDAO.getAll()) {
+                productos.add(p);
+            }
         }
-
         return productos;
-
     }
 
     private void verPedidosHoy() {
 
-        ArrayList<Pedido> pedidos = new ArrayList<>();
-        try ( Session s = HibernateUtil.getSessionFactory().openSession()) {
-            System.out.println("Conexión realizada con éxito");
-
-            Query q = s.createQuery("from Pedido where fecha = current_date()");
-            pedidos = (ArrayList<Pedido>) q.list();
+        if (pedidoDAO.getAllToday()!= null) {
+            tabla.getItems().clear();
+            for (Pedido p : pedidoDAO.getAll()) {
+                tabla.getItems().add(p);
+            }
         }
-        tabla.getItems().clear();
-        tabla.getItems().addAll(pedidos);
-
     }
 
     @FXML

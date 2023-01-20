@@ -2,15 +2,10 @@ package com.mycompany.loginfxml;
 
 import java.io.IOException;
 import java.net.URL;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -25,13 +20,9 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import models.Pedido;
-import models.Producto;
-import org.hibernate.Session;
-import org.hibernate.Transaction;
-import org.hibernate.query.Query;
+import dao.PedidoDAO;
 
 public class Historial implements Initializable {
 
@@ -65,6 +56,7 @@ public class Historial implements Initializable {
     static Carta carta;
     @FXML
     private Button btnHoy;
+    private PedidoDAO pedidoDAO;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -75,7 +67,7 @@ public class Historial implements Initializable {
         cProducto.setCellValueFactory(new PropertyValueFactory("producto"));
         cEstado.setCellValueFactory(new PropertyValueFactory("estado"));
 
-        
+        pedidoDAO = new PedidoDAO();
         verHistorial();
 
     }
@@ -97,15 +89,13 @@ public class Historial implements Initializable {
     }
 
     private void verHistorial() {
-        ArrayList<Pedido> pedidos = new ArrayList<>();
-        try ( Session s = HibernateUtil.getSessionFactory().openSession()) {
-            System.out.println("Conexión realizada con éxito");
 
-            Query q = s.createQuery("from Pedido");
-            pedidos = (ArrayList<Pedido>) q.list();
+        if (pedidoDAO.getAll() != null) {
+            tabla.getItems().clear();
+            for (Pedido p : pedidoDAO.getAll()) {
+                tabla.getItems().add(p);
+            }
         }
-        tabla.getItems().clear();
-        tabla.getItems().addAll(pedidos);
 
     }
 
@@ -143,17 +133,10 @@ public class Historial implements Initializable {
 
         if ((pedidoActual != null) && pedirConfirmacion()) {
 
-            try ( Session s = HibernateUtil.getSessionFactory().openSession()) {
-                Transaction t = s.beginTransaction();
-                s.delete(pedidoActual);
-                t.commit();
-
-                pedidoActual = null;
-
-                verHistorial();
-
-                detalle.setText("El pedido ha sido borrado con éxito");
-            }
+            pedidoDAO.delete(pedidoActual);
+            pedidoActual = null;
+            verHistorial();
+            detalle.setText("El pedido ha sido borrado con éxito");
 
         }
     }

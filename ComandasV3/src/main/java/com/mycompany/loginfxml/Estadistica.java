@@ -1,5 +1,6 @@
 package com.mycompany.loginfxml;
 
+import dao.ProductoDataDAO;
 import models.ProductoData;
 import java.io.IOException;
 import java.net.URL;
@@ -39,26 +40,7 @@ public class Estadistica implements Initializable {
     @FXML
     private BarChart<String, String> chartA;
 
-    private static final String VENTAS_MES = "SELECT pr.nombre as nProducto, sum(pr.precio) as suma FROM producto pr\n"
-            + "INNER JOIN pedido p\n"
-            + "WHERE pr.nombre = p.producto\n"
-            + "and pr.nombre in (SELECT producto FROM pedido)\n"
-            + "and p.fecha > current_date - interval 1 month\n"
-            + "group by pr.nombre";
-    private static final String VENTAS_SEMANA = "SELECT pr.nombre as nProducto, sum(pr.precio) as suma FROM producto pr\n"
-            + "INNER JOIN pedido p\n"
-            + "WHERE pr.nombre = p.producto\n"
-            + "and pr.nombre in (SELECT producto FROM pedido)\n"
-            + "and p.fecha > current_date - interval 1 week\n"
-            + "group by pr.nombre";
-    private static final String VENTAS_HOY = "SELECT pr.nombre as nProducto, sum(pr.precio) as suma FROM producto pr\n"
-            + "INNER JOIN pedido p\n"
-            + "WHERE pr.nombre = p.producto\n"
-            + "and pr.nombre in (SELECT producto FROM pedido)\n"
-            + "and p.fecha = current_date\n"
-            + "group by pr.nombre";
-
-    private String paramDinamico = VENTAS_SEMANA;
+    private ProductoDataDAO productoDataDAO;
 
     private ComboBox<String> comboTramo;
 
@@ -74,7 +56,7 @@ public class Estadistica implements Initializable {
         XYChart.Series serie1 = new XYChart.Series<>();
         serie1.setName("Mes");
 
-        for (ProductoData p : traerVentas(VENTAS_MES)) {
+        for (ProductoData p : productoDataDAO.traerVentasMes()) {
             String nombre = p.getNombre();
             int venta = p.getVenta();
 
@@ -83,7 +65,7 @@ public class Estadistica implements Initializable {
         XYChart.Series serie2 = new XYChart.Series<>();
         serie2.setName("Semana");
 
-        for (ProductoData p : traerVentas(VENTAS_SEMANA)) {
+        for (ProductoData p : productoDataDAO.traerVentasSemana()) {
             String nombre = p.getNombre();
             int venta = p.getVenta();
 
@@ -92,7 +74,7 @@ public class Estadistica implements Initializable {
         XYChart.Series serie3 = new XYChart.Series<>();
         serie3.setName("Hoy");
 
-        for (ProductoData p : traerVentas(VENTAS_HOY)) {
+        for (ProductoData p : productoDataDAO.traerVentasHoy()) {
             String nombre = p.getNombre();
             int venta = p.getVenta();
 
@@ -103,26 +85,7 @@ public class Estadistica implements Initializable {
 
     }
 
-    public ArrayList<ProductoData> traerVentas(String paramDinamico) {
-
-        ArrayList<ProductoData> listaVentas = new ArrayList<>();
-
-        try {
-            Session session = HibernateUtil.getSessionFactory().openSession();
-            Transaction tx = session.beginTransaction();
-            SQLQuery query = session.createSQLQuery(paramDinamico);
-            List<Object[]> rows = query.list();
-
-            for (Object[] row : rows) {
-                ProductoData pV = new ProductoData();
-                pV.setNombre(row[0].toString());
-                pV.setVenta(Integer.parseInt(row[1].toString()));
-                listaVentas.add(pV);
-            }
-        } catch (Exception e) {
-        }
-        return listaVentas;
-    }
+    
 
     @FXML
     private void Salir(ActionEvent event) {

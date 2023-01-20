@@ -70,7 +70,7 @@ public class Carta implements Initializable {
     private Button btnPedidos;
     @FXML
     private Button btnEstadistica;
-    private ProductoDAO productos;
+    private ProductoDAO productoDAO;
     
 
     @Override
@@ -90,7 +90,7 @@ public class Carta implements Initializable {
         btnActualizar.setDisable(true);
         btnBorrar.setDisable(true);
         
-        productos = new ProductoDAO();
+        productoDAO = new ProductoDAO();
         
 
         actualizarTabla();
@@ -122,15 +122,12 @@ public class Carta implements Initializable {
     }
 
     private void actualizarTabla() {
-        if (productos.getAll() != null) {
+        if (productoDAO.getAll() != null) {
             tabla.getItems().clear();
-            for (Producto p : productos.getAll()) {
+            for (Producto p : productoDAO.getAll()) {
                 tabla.getItems().add(p);
             }
-
         }
-        
-
     }
 
     private Producto leerFormulario() {
@@ -161,57 +158,25 @@ public class Carta implements Initializable {
         if (p != null) {
         
 
-        productos.add(p);
+        productoDAO.add(p);
         actualizarTabla();
         borrarFormulario();
         detalle.setText("Producto nuevo añadido con éxito!");
         productoActual = p;
         }            
-
-//        if (p != null) {
-//            try ( Session s = HibernateUtil.getSessionFactory().openSession()) {
-//                Transaction t = s.beginTransaction();
-//                s.save(p);
-//                t.commit();
-//
-//                actualizarTabla();
-//                detalle.setText("Producto nuevo añadido con éxito!");
-//
-//                productoActual = p;
-//
-//                borrarFormulario();
-//            }
-//        }
         
     }
 
     @FXML
     private void borrarProducto(ActionEvent event) {
         
-        if (productoActual != null) {
-            productos.delete(productoActual);
+        if (productoActual != null && pedirConfirmacion()) {
+            productoDAO.delete(productoActual);
             productoActual = null;
             actualizarTabla();
             borrarFormulario();
             detalle.setText("El producto ha sido borrado con éxito");
         }
-
-//        if ((productoActual != null) && pedirConfirmacion()) {
-//
-//            try ( Session s = HibernateUtil.getSessionFactory().openSession()) {
-//                Transaction t = s.beginTransaction();
-//                s.delete(productoActual);
-//                t.commit();
-//
-//                productoActual = null;
-//
-//                actualizarTabla();
-//
-//                borrarFormulario();
-//                detalle.setText("El producto ha sido borrado con éxito");
-//            }
-//
-//        }
     }
 
     private void borrarFormulario() {
@@ -241,29 +206,11 @@ public class Carta implements Initializable {
         productoActual.setPrecio(Integer.parseInt(textPrecio.getText()));
         productoActual.setDisponibilidad(comboDisponibilidad.getValue());
         
-        productos.update(productoActual);
+        productoDAO.update(productoActual);
         actualizarTabla();
         detalle.setText("Producto actualizado con éxito");
         borrarFormulario();
         }
-        
-//        if (productoActual != null) {
-//
-//            productoActual.setNombre(textNombre.getText());
-//            productoActual.setTipo(textTipo.getText());
-//            productoActual.setPrecio(Integer.parseInt(textPrecio.getText()));
-//            productoActual.setDisponibilidad(comboDisponibilidad.getValue());
-//
-//            try ( Session s = HibernateUtil.getSessionFactory().openSession()) {
-//                Transaction t = s.beginTransaction();
-//                s.update(productoActual);
-//                t.commit();
-//
-//                actualizarTabla();
-//                detalle.setText("Producto actualizado con éxito");
-//
-//            }
-//        }
     }
 
 
@@ -287,16 +234,6 @@ public class Carta implements Initializable {
         }
     }
     
-//    public ArrayList<Producto> traerProductos() {
-//        ArrayList<Producto> productos = new ArrayList<>();
-//        try ( Session s = HibernateUtil.getSessionFactory().openSession()) {
-//            Query q = s.createQuery("from Producto");
-//            productos = (ArrayList<Producto>) q.list();
-//        }
-//       
-//        return productos;
-//
-//    }
 
     @FXML
     private void Cerrar(ActionEvent event) {

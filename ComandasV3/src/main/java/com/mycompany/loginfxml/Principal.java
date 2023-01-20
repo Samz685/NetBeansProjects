@@ -18,8 +18,6 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.Background;
 import javafx.stage.Stage;
-import org.hibernate.Session;
-import org.hibernate.query.Query;
 
 public class Principal implements Initializable{
 
@@ -38,9 +36,7 @@ public class Principal implements Initializable{
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        try( Session s = HibernateUtil.getSessionFactory().openSession()){
-            System.out.println("Conexión realizada con éxito");
-        }
+        
     }
 
     @FXML

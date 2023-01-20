@@ -2,6 +2,7 @@ package dao;
 
 
 import dao.ObjectDBUtil;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
@@ -9,6 +10,8 @@ import models.Pedido;
 
 
 public class PedidoDAO {
+    
+    LocalDate localDate = LocalDate.now();
     
     public void add(Pedido p){       
         var em = ObjectDBUtil.getEntityManagerFactory().createEntityManager();
@@ -48,6 +51,15 @@ public class PedidoDAO {
     }
     
     public ArrayList<Pedido> getAll(){
+        ArrayList<Pedido> salida;
+        var em = ObjectDBUtil.getEntityManagerFactory().createEntityManager();
+        TypedQuery<Pedido> q = em.createQuery("select p from Pedido p",Pedido.class);
+        salida = (ArrayList<Pedido>) q.getResultList();
+        em.close();
+        return salida;
+    }
+    
+    public ArrayList<Pedido> getAllToday(){
         ArrayList<Pedido> salida;
         var em = ObjectDBUtil.getEntityManagerFactory().createEntityManager();
         TypedQuery<Pedido> q = em.createQuery("select p from Pedido p",Pedido.class);
