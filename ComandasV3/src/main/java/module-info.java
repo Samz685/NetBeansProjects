@@ -3,10 +3,8 @@ module com.mycompany.loginfxml {
     requires javafx.fxml;
     requires java.persistence;
     requires lombok;
-    requires org.hibernate.orm.core;
-    requires java.naming;
     requires java.sql;
-    requires java.base;
+   
     
     
     opens models;

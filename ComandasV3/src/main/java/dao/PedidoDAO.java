@@ -62,7 +62,7 @@ public class PedidoDAO {
     public ArrayList<Pedido> getAllToday(){
         ArrayList<Pedido> salida;
         var em = ObjectDBUtil.getEntityManagerFactory().createEntityManager();
-        TypedQuery<Pedido> q = em.createQuery("select p from Pedido p",Pedido.class);
+        TypedQuery<Pedido> q = em.createQuery("select p from Pedido p where p.fecha = CURRENT_DATE",Pedido.class);
         salida = (ArrayList<Pedido>) q.getResultList();
         em.close();
         return salida;
