@@ -12,6 +12,6 @@ package com.mycompany.tema4_ej2;
 public class Tema4_ej2 {
 
     public static void main(String[] args) {
-        System.out.println("Hello World!");
+        System.out.println("\"Bienvenido, ejecuta el Servidor y después el Cliente para ver su funcionamiento!");
     }
 }
