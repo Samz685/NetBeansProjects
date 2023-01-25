@@ -3,6 +3,9 @@ package com.mycompany.loginfxml;
 import dao.ProductoDAO;
 import java.io.IOException;
 import java.net.URL;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -90,6 +93,8 @@ public class Carta implements Initializable {
         
 
         actualizarTabla();
+        
+
 
     }
 

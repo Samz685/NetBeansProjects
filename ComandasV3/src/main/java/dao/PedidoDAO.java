@@ -3,15 +3,21 @@ package dao;
 
 import dao.ObjectDBUtil;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import models.Pedido;
 
 
 public class PedidoDAO {
     
-    LocalDate localDate = LocalDate.now();
+    LocalDateTime date = LocalDateTime.now();
+
+    DateTimeFormatter myFormatObj = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+
+    String formattedDate = date.format(myFormatObj);
+
     
     public void add(Pedido p){       
         var em = ObjectDBUtil.getEntityManagerFactory().createEntityManager();
@@ -62,7 +68,8 @@ public class PedidoDAO {
     public ArrayList<Pedido> getAllToday(){
         ArrayList<Pedido> salida;
         var em = ObjectDBUtil.getEntityManagerFactory().createEntityManager();
-        TypedQuery<Pedido> q = em.createQuery("select p from Pedido p where p.fecha = CURRENT_DATE",Pedido.class);
+        TypedQuery<Pedido> q = em.createQuery("select p from Pedido p where p.fecha =: param1",Pedido.class);
+        query.setParameter("param1",formattedDate);
         salida = (ArrayList<Pedido>) q.getResultList();
         em.close();
         return salida;
