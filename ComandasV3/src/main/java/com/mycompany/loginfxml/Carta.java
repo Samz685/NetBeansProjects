@@ -1,6 +1,7 @@
 package com.mycompany.loginfxml;
 
 import dao.ProductoDAO;
+import dao.ProductoDataDAO;
 import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDateTime;
@@ -27,6 +28,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import models.Producto;
+import models.ProductoData;
 
 public class Carta implements Initializable {
 
@@ -70,6 +72,7 @@ public class Carta implements Initializable {
     @FXML
     private Button btnEstadistica;
     private ProductoDAO productoDAO;
+
     
 
     @Override
@@ -90,11 +93,10 @@ public class Carta implements Initializable {
         btnBorrar.setDisable(true);
         
         productoDAO = new ProductoDAO();
+       
         
 
         actualizarTabla();
-        
-
 
     }
 
@@ -224,6 +226,7 @@ public class Carta implements Initializable {
         } catch (IOException ex) {
             Logger.getLogger(Carta.class.getName()).log(Level.SEVERE, null, ex);
         }
+
     }
 
     @FXML

@@ -3,14 +3,11 @@ package models;
 
 import java.io.Serializable;
 import java.time.LocalDate;
-import java.util.Date;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import static javax.persistence.GenerationType.IDENTITY;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
@@ -26,6 +23,7 @@ public class Pedido implements Serializable {
     LocalDate fecha;
     String cliente;
     String estado;
+    @ManyToOne
     Producto producto;
 
 

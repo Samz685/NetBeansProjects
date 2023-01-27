@@ -1,10 +1,13 @@
 package models;
 
 import java.io.Serializable;
+import java.util.List;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import static javax.persistence.GenerationType.IDENTITY;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
@@ -21,6 +24,10 @@ public class Producto implements Serializable {
     String tipo;
     int precio;
     String disponibilidad;
+    
+    @OneToMany(mappedBy = "producto")
+    private List<Pedido> pedidos;
+    
 
     public String getNombre() {
         return nombre;

@@ -4,14 +4,17 @@
  */
 package models;
 
+
+
 /**
  *
  * @author Syzer
  */
+
 public class ProductoData {
     
-    private String nombre;
-    private Integer venta;
+    String nombre;
+    Integer venta;
 
     public String getNombre() {
         return nombre;
