@@ -5,11 +5,13 @@ import dao.ProductoDAO;
 import java.io.IOException;
 import java.net.URL;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -20,6 +22,7 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TableColumn;
@@ -27,6 +30,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
+import javafx.util.StringConverter;
 import models.Pedido;
 import models.Producto;
 
@@ -59,13 +63,13 @@ public class Pedidos implements Initializable {
     @FXML
     private Button btnSalir;
     @FXML
-    private TextField textFecha;
+    private DatePicker textFecha;
     @FXML
     private TextField textCliente;
     @FXML
     private ComboBox<String> comboEstado;
     @FXML
-    private ComboBox<String> comboProducto;
+    private ComboBox<Producto> comboProducto;
     private Pedido pedidoActual = null;
     static Carta carta;
     @FXML
@@ -94,10 +98,13 @@ public class Pedidos implements Initializable {
         cId.setCellValueFactory(new PropertyValueFactory("idPed"));
         cFecha.setCellValueFactory(new PropertyValueFactory("fecha"));
         cCliente.setCellValueFactory(new PropertyValueFactory("cliente"));
-        cProducto.setCellValueFactory(new PropertyValueFactory("producto"));
+        cProducto.setCellValueFactory((var fila) -> {
+            Pedido p = fila.getValue();
+            return new ReadOnlyObjectWrapper(p.getProducto());
+        });
         cEstado.setCellValueFactory(new PropertyValueFactory("estado"));
 
-        textFecha.setText(fecha());
+        textFecha.setValue(LocalDate.now());
 
         btnActualizar.setDisable(true);
         btnBorrar.setDisable(true);
@@ -113,9 +120,9 @@ public class Pedidos implements Initializable {
 
         if (pedido != null) {
 
-            textFecha.setText(pedido.getFecha());
+            textFecha.setValue(pedido.getFecha());
             textCliente.setText(pedido.getCliente());
-            comboProducto.setValue(String.valueOf(pedido.getProducto()));
+            comboProducto.setValue(pedido.getProducto());
             comboEstado.setValue(pedido.getEstado());
 
             pedidoActual = pedido;
@@ -129,9 +136,10 @@ public class Pedidos implements Initializable {
     }
 
     private Pedido leerFormulario() {
-        String fecha = textFecha.getText();
+        
+        LocalDate fecha = textFecha.getValue();
         String cliente = textCliente.getText();
-        String producto = comboProducto.getValue();
+        Producto producto = comboProducto.getValue();
         String estado = comboEstado.getValue();
 
         if ("".equals(cliente) || "".equals(producto) || "".equals(estado)) {
@@ -177,10 +185,11 @@ public class Pedidos implements Initializable {
     }
 
     private void borrarFormulario() {
-
-        textFecha.setText(fecha());
+        
+ 
+        textFecha.setValue(LocalDate.now());
         textCliente.setText("");
-        comboProducto.setValue("");
+        comboProducto.setValue(null);
         comboEstado.setValue("");
         btnActualizar.setDisable(true);
     }
@@ -239,17 +248,38 @@ public class Pedidos implements Initializable {
 
     private void rellenarCombos() {
 
-        ArrayList<Producto> productos = traerProductos();
+        ObservableList<Producto> productos = FXCollections.observableArrayList();
+        
+        for (Producto p : traerProductos()) {
+            productos.add(p);
 
-        ObservableList<String> items = FXCollections.observableArrayList();
-
-        for (var p : productos) {
-
-            String producto = p.getNombre();
-
-            items.add(producto);
         }
-        comboProducto.setItems(items);
+        comboProducto.setItems(productos);
+
+        comboProducto.setConverter(new StringConverter<Producto>() {
+            @Override
+            public String toString(Producto object) {
+                if (object != null) {
+                    return object.getNombre();
+                } else {
+                    return "SIN PRODUCTO";
+                }
+            }
+
+            @Override
+            public Producto fromString(String param) {
+                Producto producto = new Producto();
+
+                if (productoDAO.getProducto(param) != null) {
+                    for (Producto p : productoDAO.getAll()) {
+                        producto = p;
+                    }
+                }
+                return producto;
+
+            }
+        });
+
 
         ObservableList<String> items2 = FXCollections.observableArrayList();
 
@@ -274,7 +304,7 @@ public class Pedidos implements Initializable {
 
         if (pedidoDAO.getAllToday()!= null) {
             tabla.getItems().clear();
-            for (Pedido p : pedidoDAO.getAll()) {
+            for (Pedido p : pedidoDAO.getAllToday()) {
                 tabla.getItems().add(p);
             }
         }

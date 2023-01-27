@@ -14,7 +14,7 @@ public class PedidoDAO {
     
     LocalDateTime date = LocalDateTime.now();
 
-    DateTimeFormatter myFormatObj = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+    DateTimeFormatter myFormatObj = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
     String formattedDate = date.format(myFormatObj);
 
@@ -29,16 +29,6 @@ public class PedidoDAO {
     
     public void update(Pedido p){       
         
-        /* primera opción: leo el usuario y lo modifico directamente */
-/*        var em = ObjectDBUtil.getEntityManagerFactory().createEntityManager();
-        Usuario user = em.find(Usuario.class, u.getId());
-        em.getTransaction().begin();
-        user.setAlias( u.getAlias() );
-        user.setPassword( u.getPassword() );
-        em.getTransaction().commit();
-        em.close();     
-  */          
-        /*segunda opción: utilizo una query con parámetros directamente */
         
         var em = ObjectDBUtil.getEntityManagerFactory().createEntityManager();     
         em.getTransaction().begin();
@@ -68,9 +58,11 @@ public class PedidoDAO {
     public ArrayList<Pedido> getAllToday(){
         ArrayList<Pedido> salida;
         var em = ObjectDBUtil.getEntityManagerFactory().createEntityManager();
-        TypedQuery<Pedido> q = em.createQuery("select p from Pedido p where p.fecha =: param1",Pedido.class);
-        query.setParameter("param1",formattedDate);
+        TypedQuery<Pedido> q = em.createQuery("select p from Pedido p where p.fecha =:currentDate",Pedido.class);
+        q.setParameter("currentDate", LocalDate.now());
         salida = (ArrayList<Pedido>) q.getResultList();
+    
+  
         em.close();
         return salida;
     }

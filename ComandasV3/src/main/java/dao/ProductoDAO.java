@@ -20,22 +20,12 @@ public class ProductoDAO {
     
     public void update(Producto p){       
         
-        /* primera opción: leo el usuario y lo modifico directamente */
-/*        var em = ObjectDBUtil.getEntityManagerFactory().createEntityManager();
-        Usuario user = em.find(Usuario.class, u.getId());
-        em.getTransaction().begin();
-        user.setAlias( u.getAlias() );
-        user.setPassword( u.getPassword() );
-        em.getTransaction().commit();
-        em.close();     
-  */          
-        /*segunda opción: utilizo una query con parámetros directamente */
         
         var em = ObjectDBUtil.getEntityManagerFactory().createEntityManager();     
         em.getTransaction().begin();
         TypedQuery<Producto> query = em.createQuery(
             "UPDATE Producto SET nombre = :nombre, tipo = :tipo, precio = :precio,"
-                    + "disponibilidad = :disponibilidad WHERE id = :id", Producto.class);
+                    + "disponibilidad = :disponibilidad WHERE idPro = :idPro", Producto.class);
         query.setParameter("nombre",p.getNombre());
         query.setParameter("tipo",p.getTipo());
         query.setParameter("precio",p.getPrecio());
@@ -51,6 +41,16 @@ public class ProductoDAO {
         ArrayList<Producto> salida;
         var em = ObjectDBUtil.getEntityManagerFactory().createEntityManager();
         TypedQuery<Producto> q = em.createQuery("select p from Producto p",Producto.class);
+        salida = (ArrayList<Producto>) q.getResultList();
+        em.close();
+        return salida;
+    }
+    
+    public ArrayList<Producto> getProducto(String param){
+        ArrayList<Producto> salida;
+        var em = ObjectDBUtil.getEntityManagerFactory().createEntityManager();
+        TypedQuery<Producto> q = em.createQuery("select p from Producto p where p.nombre =:nombre",Producto.class);
+        q.setParameter("nombre", param);
         salida = (ArrayList<Producto>) q.getResultList();
         em.close();
         return salida;

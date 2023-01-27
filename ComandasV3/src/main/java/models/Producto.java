@@ -1,4 +1,3 @@
-
 package models;
 
 import java.io.Serializable;
@@ -65,7 +64,7 @@ public class Producto implements Serializable {
 
     @Override
     public String toString() {
-        return "Producto " + "idPro: " + idPro + " || nombre: " + nombre + " || tipo: " + tipo + " || precio: " + precio +"€" + " || disponibilidad: " + disponibilidad;
+        return nombre;
     }
     
     
