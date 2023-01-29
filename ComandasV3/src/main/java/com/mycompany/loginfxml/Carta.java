@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
@@ -220,12 +221,16 @@ public class Carta implements Initializable {
 
     @FXML
     private void abrirPedidos(ActionEvent event) {
+
         
         try {
             App.setRoot("pedidos");
         } catch (IOException ex) {
             Logger.getLogger(Carta.class.getName()).log(Level.SEVERE, null, ex);
         }
+
+
+
 
     }
 

@@ -13,102 +13,72 @@ import models.ProductoData;
 
 public class ProductoDataDAO {
     
-//    private static final String VENTAS_MES = "SELECT pr.nombre as nProducto, sum(pr.precio) as suma \n"
-//            + "FROM Producto pr \n"
-//            + "INNER JOIN Pedido p ON pr.nombre = p.producto.nombre \n"
-//            + "WHERE pr.nombre IN (SELECT p2.producto.nombre FROM Pedido p2) \n"
-//            + "AND p.fecha > :fechaIntervalo \n"
-//            + "GROUP BY pr.nombre";
-//    private static final String VENTAS_SEMANA = "SELECT pr.nombre as nProducto, sum(pr.precio) as suma \n"
-//            + "FROM Producto pr \n"
-//            + "INNER JOIN Pedido p ON pr.nombre = p.producto.nombre \n"
-//            + "WHERE pr.nombre IN (SELECT p2.producto.nombre FROM Pedido p2) \n"
-//            + "AND p.fecha > :fechaIntervalo \n"
-//            + "GROUP BY pr.nombre";
-//    private static final String VENTAS_HOY = "SELECT pr.nombre as nProducto, sum(pr.precio) as suma \n"
-//            + "FROM Producto pr JOIN pr.pedido p WHERE p.fecha = CURRENT_DATE group by pr.nombre";
-    
-//    public ArrayList<ProductoData> traerVentasHoy() {
-//
-//        ArrayList<ProductoData> listaVentas = new ArrayList
-//    
-//        
-//        var em = ObjectDBUtil.getEntityManagerFactory().createEntityManager();
-//        TypedQuery<Object[]> q = em.createQuery("SELECT pr.nombre as nProducto, SUM(pr.precio) as suma\n"
-//                                                + "FROM Producto pr\n"
-//                                                + "JOIN pr.pedidos p\n"
-//                                                + "WHERE p.fecha =:hoy GROUP BY pr.nombre", ProductoData.class);
-//        q.setParameter("hoy", LocalDate.now());
-//        List<Object[]> rows = (List<Object[]>)q.getResultList();
-//        em.close();
-//
-//        for (Object[] row : rows) {
-//                ProductoData pV = new ProductoData();
-//                pV.setNombre(row[0].toString());
-//                pV.setVenta(Integer.parseInt(row[1].toString()));
-//                listaVentas.add(pV);
-//            }
-//
-//       
-//        return listaVentas;
-//    }
-    
     public ArrayList<ProductoData> traerVentasHoy() {
         ArrayList<ProductoData> listaVentas = new ArrayList();
         var em = ObjectDBUtil.getEntityManagerFactory().createEntityManager();
         TypedQuery<Object[]> q = em.createQuery("SELECT pr.nombre as nProducto, SUM(pr.precio) as suma\n"
                 + "FROM Producto pr\n"
                 + "JOIN pr.pedidos p\n"
-                + "WHERE p.fecha =:hoy GROUP BY pr.nombre", Object[].class);
-        q.setParameter("hoy", LocalDate.now());
+                + "WHERE p.fecha =:current_date GROUP BY pr.nombre", Object[].class);
+        q.setParameter("current_date", LocalDate.now());
         List<Object[]> rows = q.getResultList();
         em.close();
         for (Object[] row : rows) {
             ProductoData pV = new ProductoData();
-                pV.setNombre(row[0].toString());
-                pV.setVenta(Integer.valueOf(row[1].toString()));
-                listaVentas.add(pV);
+            pV.setNombre(row[0].toString());
+            pV.setVenta(Integer.valueOf(row[1].toString()));
+            listaVentas.add(pV);
         }
         return listaVentas;
     }
     
-//    public ArrayList<ProductoData> traerVentasSemana() {
-//        
-//        ArrayList<ProductoData> listaVentas = new ArrayList
-//        var em = ObjectDBUtil.getEntityManagerFactory().createEntityManager();
-//        TypedQuery<Object[]> q = em.createQuery(VENTAS_SEMANA,ProductoData.class);
-//        List<Object[]> rows = (List<Object[]>)q.getResultList();
-//        em.close();
-//
-//        for (Object[] row : rows) {
-//                ProductoData pV = new ProductoData();
-//                pV.setNombre(row[0].toString());
-//                pV.setVenta(Integer.parseInt(row[1].toString()));
-//                listaVentas.add(pV);
-//            }
-//
-//       
-//        return listaVentas;
-//    }
-//    
-//    public ArrayList<ProductoData> traerVentasMes() {
-//        
-//        ArrayList<ProductoData> listaVentas = new ArrayList
-//        var em = ObjectDBUtil.getEntityManagerFactory().createEntityManager();
-//        TypedQuery<Object[]> q = em.createQuery(VENTAS_MES,ProductoData.class);
-//        List<Object[]> rows = (List<Object[]>)q.getResultList();
-//        em.close();
-//
-//        for (Object[] row : rows) {
-//                ProductoData pV = new ProductoData();
-//                pV.setNombre(row[0].toString());
-//                pV.setVenta(Integer.parseInt(row[1].toString()));
-//                listaVentas.add(pV);
-//            }
-//
-//       
-//        return listaVentas;
-//    }
+    public ArrayList<ProductoData> traerVentasSemana() {
+        
+        LocalDate today = LocalDate.now();
+        LocalDate weekAgo = today.minusWeeks(1);
+        
+        ArrayList<ProductoData> listaVentas = new ArrayList();
+        var em = ObjectDBUtil.getEntityManagerFactory().createEntityManager();
+        TypedQuery<Object[]> q = em.createQuery("SELECT pr.nombre as nProducto, SUM(pr.precio) as suma\n"
+                + "FROM Producto pr\n"
+                + "JOIN pr.pedidos p\n"
+                + "WHERE p.fecha >=: weekAgo AND p.fecha <=: today GROUP BY pr.nombre", Object[].class);
+        q.setParameter("today", today);
+        q.setParameter("weekAgo", weekAgo);
+        List<Object[]> rows = q.getResultList();
+        em.close();
+        for (Object[] row : rows) {
+            ProductoData pV = new ProductoData();
+            pV.setNombre(row[0].toString());
+            pV.setVenta(Integer.valueOf(row[1].toString()));
+            listaVentas.add(pV);
+        }
+        return listaVentas;
+    }
+    
+    public ArrayList<ProductoData> traerVentasMes() {
+        
+        LocalDate today = LocalDate.now();
+        LocalDate monthAgo = today.minusMonths(1);
+        
+        ArrayList<ProductoData> listaVentas = new ArrayList();
+        var em = ObjectDBUtil.getEntityManagerFactory().createEntityManager();
+        TypedQuery<Object[]> q = em.createQuery("SELECT pr.nombre as nProducto, SUM(pr.precio) as suma\n"
+                + "FROM Producto pr\n"
+                + "JOIN pr.pedidos p\n"
+                + "WHERE p.fecha >=: monthAgo AND p.fecha <=: today GROUP BY pr.nombre", Object[].class);
+        q.setParameter("today", today);
+        q.setParameter("monthAgo", monthAgo);
+        List<Object[]> rows = q.getResultList();
+        em.close();
+        for (Object[] row : rows) {
+            ProductoData pV = new ProductoData();
+            pV.setNombre(row[0].toString());
+            pV.setVenta(Integer.valueOf(row[1].toString()));
+            listaVentas.add(pV);
+        }
+        return listaVentas;
+    }
     
     
             
