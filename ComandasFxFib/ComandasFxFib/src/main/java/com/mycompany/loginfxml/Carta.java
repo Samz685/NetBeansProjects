@@ -300,11 +300,12 @@ public class Carta implements Initializable {
         } catch (JRException | ClassNotFoundException | SQLException ex) {
             Logger.getLogger(Carta.class.getName()).log(Level.SEVERE, null, ex);
         }
-//        try {
-//            Informe.pdfReport( tipo.getText() );
-//        } catch (JRException | ClassNotFoundException | SQLException ex) {
-//            Logger.getLogger(PrimaryController.class.getName()).log(Level.SEVERE, null, ex);
-//        }
+        try {
+            Informe.pdfReport();
+        } catch (JRException | ClassNotFoundException | SQLException ex) {
+            Logger.getLogger(Carta
+                    .class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     
