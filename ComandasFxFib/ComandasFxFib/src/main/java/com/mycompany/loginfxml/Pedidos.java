@@ -4,7 +4,6 @@ import models.ClienteData;
 import java.io.IOException;
 import java.net.URL;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -22,7 +21,6 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
-import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TableColumn;
@@ -70,7 +68,7 @@ public class Pedidos implements Initializable {
     @FXML
     private Button btnSalir;
     @FXML
-    private DatePicker textFecha;
+    private TextField textFecha;
     @FXML
     private TextField textCliente;
     @FXML
@@ -104,7 +102,7 @@ public class Pedidos implements Initializable {
         cProducto.setCellValueFactory(new PropertyValueFactory("producto"));
         cEstado.setCellValueFactory(new PropertyValueFactory("estado"));
 
-        textFecha.setValue(LocalDate.now());
+        textFecha.setText(fecha());
 
         btnActualizar.setDisable(true);
         btnBorrar.setDisable(true);
@@ -120,7 +118,7 @@ public class Pedidos implements Initializable {
 
         if (pedido != null) {
 
-            textFecha.setValue(pedido.getFecha());
+            textFecha.setText(pedido.getFecha());
             textCliente.setText(pedido.getCliente());
             comboProducto.setValue(String.valueOf(pedido.getProducto()));
             comboEstado.setValue(pedido.getEstado());
@@ -136,7 +134,7 @@ public class Pedidos implements Initializable {
     }
 
     private Pedido leerFormulario() {
-        LocalDate fecha = textFecha.getValue();
+        String fecha = textFecha.getText();
         String cliente = textCliente.getText();
         String producto = comboProducto.getValue();
         String estado = comboEstado.getValue();
@@ -198,7 +196,7 @@ public class Pedidos implements Initializable {
 
     private void borrarFormulario() {
 
-        textFecha.setValue(LocalDate.now());
+        textFecha.setText(fecha());
         textCliente.setText("");
         comboProducto.setValue("");
         comboEstado.setValue("");

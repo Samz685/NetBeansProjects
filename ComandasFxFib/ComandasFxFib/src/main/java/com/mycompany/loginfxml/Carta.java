@@ -2,6 +2,7 @@ package com.mycompany.loginfxml;
 
 import java.io.IOException;
 import java.net.URL;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
@@ -24,6 +25,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import models.Producto;
+import net.sf.jasperreports.engine.JRException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.query.Query;
@@ -69,6 +71,8 @@ public class Carta implements Initializable {
     private Button btnPedidos;
     @FXML
     private Button btnEstadistica;
+    @FXML
+    private Button btnInforme;
     
 
     @Override
@@ -286,6 +290,21 @@ public class Carta implements Initializable {
         } catch (IOException ex) {
             Logger.getLogger(Carta.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+
+    @FXML
+    private void verInforme(ActionEvent event) throws SQLException {
+        
+        try {
+            Informe.showReport();
+        } catch (JRException | ClassNotFoundException | SQLException ex) {
+            Logger.getLogger(Carta.class.getName()).log(Level.SEVERE, null, ex);
+        }
+//        try {
+//            Informe.pdfReport( tipo.getText() );
+//        } catch (JRException | ClassNotFoundException | SQLException ex) {
+//            Logger.getLogger(PrimaryController.class.getName()).log(Level.SEVERE, null, ex);
+//        }
     }
 
     

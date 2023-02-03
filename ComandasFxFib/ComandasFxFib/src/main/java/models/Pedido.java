@@ -2,7 +2,6 @@
 package models;
 
 import java.io.Serializable;
-import java.time.LocalDate;
 import java.util.Date;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -23,16 +22,16 @@ public class Pedido implements Serializable {
     @Id
     @GeneratedValue(strategy=IDENTITY)
     int idPed;
-    LocalDate fecha;
+    String fecha;
     String cliente;
     String estado;
     String producto;
 
-    public LocalDate getFecha() {
+    public String getFecha() {
         return fecha;
     }
 
-    public void setFecha(LocalDate fecha) {
+    public void setFecha(String fecha) {
         this.fecha = fecha;
     }
 

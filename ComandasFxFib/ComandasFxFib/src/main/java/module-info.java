@@ -7,9 +7,11 @@ module com.mycompany.loginfxml {
     requires java.naming;
     requires java.sql;
     requires java.base;
+    requires jasperreports;
+    requires javafx.swing;
     
 
-    opens com.mycompany.loginfxml to javafx.fxml;
+    opens com.mycompany.loginfxml to javafx.fxml, javafx.swing, java.sql;
     opens models;
     exports com.mycompany.loginfxml;
 }
