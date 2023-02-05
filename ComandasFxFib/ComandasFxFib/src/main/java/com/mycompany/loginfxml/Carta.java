@@ -296,12 +296,12 @@ public class Carta implements Initializable {
     private void verInforme(ActionEvent event) throws SQLException {
         
         try {
-            Informe.showReport();
+            Informe.showReportCarta();
         } catch (JRException | ClassNotFoundException | SQLException ex) {
             Logger.getLogger(Carta.class.getName()).log(Level.SEVERE, null, ex);
         }
         try {
-            Informe.pdfReport();
+            Informe.pdfReportCarta();
         } catch (JRException | ClassNotFoundException | SQLException ex) {
             Logger.getLogger(Carta
                     .class.getName()).log(Level.SEVERE, null, ex);
