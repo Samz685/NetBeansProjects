@@ -1,10 +1,12 @@
 
 package com.mycompany.loginfxml;
 
+import java.io.File;
 import java.sql.Date;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.HashMap;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperFillManager;
@@ -50,15 +52,28 @@ public class Informe {
                 JdbcUtil.getConnection()
         );
         
-        JRPdfExporter exp = new JRPdfExporter();
-        exp.setExporterInput(new SimpleExporterInput(jasperPrint));
-        exp.setExporterOutput(new SimpleOutputStreamExporterOutput("Reporte_Carta.pdf"));
-        SimplePdfExporterConfiguration conf = new SimplePdfExporterConfiguration();
-        exp.setConfiguration(conf);
-        exp.exportReport();
-
+        JFileChooser chooser = new JFileChooser();
+        int option = chooser.showSaveDialog(null);
+        if (option == JFileChooser.APPROVE_OPTION) {
+            File selectedFile = chooser.getSelectedFile();
+            String path = selectedFile.getAbsolutePath();
+            if (!path.endsWith(".pdf")) {
+                path += ".pdf";
+            }
+            
+            JRPdfExporter exp = new JRPdfExporter();
+            exp.setExporterInput(new SimpleExporterInput(jasperPrint));
+            exp.setExporterOutput(new SimpleOutputStreamExporterOutput(path));
+            SimplePdfExporterConfiguration conf = new SimplePdfExporterConfiguration();
+            exp.setConfiguration(conf);
+            exp.exportReport();
+        }
         System.out.print("Done!");
     }
+
+
+        
+    
     
     public static void showReportPedidosHoy(Date fecha) throws JRException, ClassNotFoundException, SQLException {
 
@@ -93,17 +108,27 @@ public class Informe {
         hm.put("fechaParam", fecha);
 
         JasperPrint jasperPrint = JasperFillManager.fillReport(
-                report, 
-                hm, 
+                report,
+                hm,
                 JdbcUtil.getConnection()
         );
-        
-        JRPdfExporter exp = new JRPdfExporter();
-        exp.setExporterInput(new SimpleExporterInput(jasperPrint));
-        exp.setExporterOutput(new SimpleOutputStreamExporterOutput("Reporte_Pedidos_Hoy.pdf"));
-        SimplePdfExporterConfiguration conf = new SimplePdfExporterConfiguration();
-        exp.setConfiguration(conf);
-        exp.exportReport();
+
+        JFileChooser chooser = new JFileChooser();
+        int option = chooser.showSaveDialog(null);
+        if (option == JFileChooser.APPROVE_OPTION) {
+            File selectedFile = chooser.getSelectedFile();
+            String path = selectedFile.getAbsolutePath();
+            if (!path.endsWith(".pdf")) {
+                path += ".pdf";
+            }
+
+            JRPdfExporter exp = new JRPdfExporter();
+            exp.setExporterInput(new SimpleExporterInput(jasperPrint));
+            exp.setExporterOutput(new SimpleOutputStreamExporterOutput(path));
+            SimplePdfExporterConfiguration conf = new SimplePdfExporterConfiguration();
+            exp.setConfiguration(conf);
+            exp.exportReport();
+        }
 
         System.out.print("Done!");
     }
@@ -148,12 +173,22 @@ public class Informe {
                 JdbcUtil.getConnection()
         );
         
-        JRPdfExporter exp = new JRPdfExporter();
-        exp.setExporterInput(new SimpleExporterInput(jasperPrint));
-        exp.setExporterOutput(new SimpleOutputStreamExporterOutput("Reporte_Pedidos_Periodo.pdf"));
-        SimplePdfExporterConfiguration conf = new SimplePdfExporterConfiguration();
-        exp.setConfiguration(conf);
-        exp.exportReport();
+        JFileChooser chooser = new JFileChooser();
+        int option = chooser.showSaveDialog(null);
+        if (option == JFileChooser.APPROVE_OPTION) {
+            File selectedFile = chooser.getSelectedFile();
+            String path = selectedFile.getAbsolutePath();
+            if (!path.endsWith(".pdf")) {
+                path += ".pdf";
+            }
+
+            JRPdfExporter exp = new JRPdfExporter();
+            exp.setExporterInput(new SimpleExporterInput(jasperPrint));
+            exp.setExporterOutput(new SimpleOutputStreamExporterOutput(path));
+            SimplePdfExporterConfiguration conf = new SimplePdfExporterConfiguration();
+            exp.setConfiguration(conf);
+            exp.exportReport();
+        }
 
         System.out.print("Done!");
     }

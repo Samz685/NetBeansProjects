@@ -24,11 +24,6 @@
                   <Insets top="20.0" />
                </VBox.margin>
             </Text>
-            <Text strokeType="OUTSIDE" strokeWidth="0.0" textAlignment="CENTER">
-               <font>
-                  <Font name="System Bold" size="18.0" />
-               </font>
-            </Text>
          </children>
       </VBox>
    </top>
@@ -44,8 +39,8 @@
                   <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                </rowConstraints>
                <children>
-                  <Button fx:id="btnCancelar" alignment="CENTER" minWidth="0.0" mnemonicParsing="false" onAction="#generarPDF" prefHeight="50.0" prefWidth="130.0" text="Generar PDF" GridPane.columnIndex="1" />
-                  <Button fx:id="btnCrear" alignment="CENTER" minWidth="0.0" mnemonicParsing="false" onAction="#generarInforme" prefHeight="50.0" prefWidth="130.0" text="Generar Informe" />
+                  <Button fx:id="btnPDF" alignment="CENTER" minWidth="0.0" mnemonicParsing="false" onAction="#generarPDF" prefHeight="50.0" prefWidth="130.0" text="Generar PDF" GridPane.columnIndex="1" />
+                  <Button fx:id="btnGenerarInforme" alignment="CENTER" minWidth="0.0" mnemonicParsing="false" onAction="#generarInforme" prefHeight="50.0" prefWidth="130.0" text="Generar Informe" />
                </children>
             </GridPane>
             <Label fx:id="info" alignment="CENTER" contentDisplay="CENTER" textAlignment="CENTER">
