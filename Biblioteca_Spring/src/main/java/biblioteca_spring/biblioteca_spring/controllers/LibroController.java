@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.servlet.ModelAndView;
 
 /**
  *
@@ -30,15 +31,16 @@ import org.springframework.web.bind.annotation.PutMapping;
 @RestController
 @RequestMapping("/biblioteca")
 public class LibroController {
-    
+
     @Autowired
     LibroRepository repo;
-    
+
     @GetMapping()
     public List<Libro> list() {
         return repo.findAll();
     }
-    
+
+    //Listar todos los libros (solo el id y titulo de cada uno)
     @GetMapping("/libros")
     public ResponseEntity<List<HashMap<String, Object>>> getLibros() {
         List<Libro> libros = repo.findAll();
@@ -56,56 +58,125 @@ public class LibroController {
         }
     }
 
-    
-    //se usa optional porque se encapsula dentro el obj libro por si no existe
-    //con responseEntity se usa para en el caso de no haber libro, lance un error o mensaje que queramos
+    //Listar el detalle de un libro concreto​
     @GetMapping("/{id}")
     public ResponseEntity<Libro> get(@PathVariable Long id) {
-        if(repo.existsById(id)){
+        if (repo.existsById(id)) {
             return new ResponseEntity<Libro>(repo.findById(id).get(), HttpStatus.OK);
-        } else{
+        } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        
     }
-    
-    @GetMapping("/titulo/{id}")
-    public ResponseEntity<HashMap<String, Object>> getTitulo(@PathVariable Long id) {
-        if(repo.existsById(id)){
-            
-            Libro libro = repo.findById(id).get();
-            HashMap<String, Object> libroResumen = new HashMap<>();
-            
-            libroResumen.put("id", libro.getId());
-            libroResumen.put("titulo", libro.getTitulo());
-            return new ResponseEntity<HashMap<String, Object>>(libroResumen, HttpStatus.OK);
-        } else{
+
+    //Listar todos los libros de una categoría concreta que se le pasa por la url
+    @GetMapping("/categoria/{categoria}")
+    public ResponseEntity<List<HashMap<String, Object>>> getLibrosCategoria(@PathVariable String categoria) {
+        List<Libro> libros = repo.findAll();
+        if (!libros.isEmpty()) {
+            List<HashMap<String, Object>> librosResumen = new ArrayList<>();
+            for (Libro libro : libros) {
+                if (libro.getCategoria().toLowerCase().equals(categoria.toLowerCase())) {
+
+                    HashMap<String, Object> libroResumen = new HashMap<>();
+                    libroResumen.put("id", libro.getId());
+                    libroResumen.put("titulo", libro.getTitulo());
+                    librosResumen.add(libroResumen);
+                }
+            }
+            return new ResponseEntity<List<HashMap<String, Object>>>(librosResumen, HttpStatus.OK);
+        } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        
     }
-    
-//    
-//    @PutMapping("/{id}")
-//    public ResponseEntity<?> put(@PathVariable String id, @RequestBody Object input) {
-//        return null;
-//    }
-//    
-    
-    //el cuerpo de la peticion http es lo que pongamos nosotros en postman por ejemplo
+
+    //Listar todos los libros de un autor concreto que se le pasa por la url​
+    @GetMapping("/autor/{autor}")
+    public ResponseEntity<List<HashMap<String, Object>>> getLibrosAutor(@PathVariable String autor) {
+        List<Libro> libros = repo.findAll();
+        if (!libros.isEmpty()) {
+            List<HashMap<String, Object>> librosResumen = new ArrayList<>();
+            for (Libro libro : libros) {
+                if (libro.getAutor().toLowerCase().equals(autor.toLowerCase())) {
+
+                    HashMap<String, Object> libroResumen = new HashMap<>();
+                    libroResumen.put("id", libro.getId());
+                    libroResumen.put("titulo", libro.getTitulo());
+                    librosResumen.add(libroResumen);
+                }
+            }
+            return new ResponseEntity<List<HashMap<String, Object>>>(librosResumen, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
+
+    //Permita crear un nuevo libro
     @PostMapping
-    public ResponseEntity<Libro> post(@RequestBody Libro input) {
-        
+    public ResponseEntity<Libro> crearLibro(@RequestBody Libro input) {
+
         repo.save(input);
         System.out.println(input);
-        
+
         return new ResponseEntity<>(input, HttpStatus.CREATED);
     }
     
-//    
-//    @DeleteMapping("/{id}")
-//    public ResponseEntity<?> delete(@PathVariable String id) {
-//        return null;
-//    }
-    
+    //Permita actualizar un nuevo libro
+    @PutMapping("/{id}")
+    public ResponseEntity<Libro> updateLibro(@PathVariable Long id, @RequestBody Libro input) {
+        ResponseEntity<Libro> salida;
+        System.out.println(input);
+
+        if (repo.existsById(id)) {
+            input = repo.findById(id).get();
+            
+            repo.save(input);
+            salida = new ResponseEntity<Libro>(repo.findById(id).get(), HttpStatus.OK);
+        } else {
+            salida = new ResponseEntity<Libro>(HttpStatus.NOT_FOUND);
+        }
+
+        
+        return salida;
+    }
+
+    //Permitir solicitudes POST para eliminar
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Libro> delete(@PathVariable Long id) {
+
+        ResponseEntity<Libro> salida;
+
+        if (repo.existsById(id)) {
+            salida = new ResponseEntity<Libro>(repo.findById(id).get(), HttpStatus.OK);
+            repo.deleteById(id);
+        } else {
+            salida = new ResponseEntity<Libro>(HttpStatus.NOT_FOUND);
+        }
+
+        return salida;
+    }
+
+    //EXTRA: listar un libro por id, muestra id y titulo
+    @GetMapping("/titulo/{id}")
+    public ResponseEntity<HashMap<String, Object>> getTitulo(@PathVariable Long id) {
+        if (repo.existsById(id)) {
+
+            Libro libro = repo.findById(id).get();
+            HashMap<String, Object> libroResumen = new HashMap<>();
+
+            libroResumen.put("id", libro.getId());
+            libroResumen.put("titulo", libro.getTitulo());
+            return new ResponseEntity<HashMap<String, Object>>(libroResumen, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @GetMapping("/tabla")
+    public ModelAndView getTablaLibros() {
+        ModelAndView mav = new ModelAndView("libros.html");
+        List<Libro> libros = repo.findAll();
+        mav.addObject("libros", libros);
+        return mav;
+    }
 }
