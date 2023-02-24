@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.HashMap;
 import java.util.ArrayList;
+import org.springframework.ui.Model;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -60,6 +61,7 @@ public class LibroController {
 
     //Listar el detalle de un libro concreto​
     @GetMapping("/{id}")
+
     public ResponseEntity<Libro> get(@PathVariable Long id) {
         if (repo.existsById(id)) {
             return new ResponseEntity<Libro>(repo.findById(id).get(), HttpStatus.OK);
@@ -110,7 +112,6 @@ public class LibroController {
         }
     }
 
-
     //Permita crear un nuevo libro
     @PostMapping
     public ResponseEntity<Libro> crearLibro(@RequestBody Libro input) {
@@ -120,23 +121,39 @@ public class LibroController {
 
         return new ResponseEntity<>(input, HttpStatus.CREATED);
     }
-    
-    //Permita actualizar un nuevo libro
+
+    //Permita actualizar un nuevo libro, se actualizan solo los campos introducidos
     @PutMapping("/{id}")
     public ResponseEntity<Libro> updateLibro(@PathVariable Long id, @RequestBody Libro input) {
         ResponseEntity<Libro> salida;
         System.out.println(input);
 
         if (repo.existsById(id)) {
-            input = repo.findById(id).get();
-            
+            Libro libro = repo.getById(id);
+            input.setId(id);
+
+            if (input.getTitulo() == null) {
+                input.setTitulo(libro.getTitulo());
+            }
+            if (input.getAutor() == null) {
+                input.setAutor(libro.getAutor());
+            }
+            if (input.getCategoria() == null) {
+                input.setCategoria(libro.getCategoria());
+            }
+            if (input.getIsbn() == null) {
+                input.setIsbn(libro.getIsbn());
+            }
+            if (input.getEdicion() == null) {
+                input.setEdicion(libro.getEdicion());
+            }
+
             repo.save(input);
             salida = new ResponseEntity<Libro>(repo.findById(id).get(), HttpStatus.OK);
         } else {
             salida = new ResponseEntity<Libro>(HttpStatus.NOT_FOUND);
         }
 
-        
         return salida;
     }
 
@@ -172,11 +189,4 @@ public class LibroController {
         }
     }
 
-    @GetMapping("/tabla")
-    public ModelAndView getTablaLibros() {
-        ModelAndView mav = new ModelAndView("libros.html");
-        List<Libro> libros = repo.findAll();
-        mav.addObject("libros", libros);
-        return mav;
-    }
 }
