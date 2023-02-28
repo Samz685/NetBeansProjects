@@ -88,7 +88,7 @@ public class AlumnoController {
         return new ResponseEntity<>(input, HttpStatus.CREATED);
     }
 
-        //Actualizar alumno existente, se actualizan solo los campos introducidos
+    //Actualizar alumno existente, se actualizan solo los campos introducidos
     @PutMapping("/actualizar/{id}")
     public ResponseEntity<Alumno> updateAlumno(@PathVariable Long id, @RequestBody Alumno input) {
         ResponseEntity<Alumno> salida;
@@ -121,6 +121,9 @@ public class AlumnoController {
             }
             if (input.getEmpresa() == null) {
                 input.setEmpresa(alumno.getEmpresa());
+            }
+            if (input.getProfesor() == null) {
+                input.setProfesor(alumno.getProfesor());
             }
             if (input.getHoras_dual() <= 0) {
                 input.setHoras_dual(alumno.getHoras_dual());

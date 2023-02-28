@@ -9,6 +9,7 @@ import GestorSpring.GestorSpring.repositories.AlumnoRepository;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestMapping;
 import java.util.List;
+import java.util.LinkedHashMap;
 import java.util.Optional;
 import java.util.HashMap;
 import java.util.ArrayList;
@@ -39,9 +40,10 @@ public class AlumnosControllerHtml {
 
     //Mostrar datos en una tabla en html en lugar de json
     @GetMapping("/tabla")
-     public String mostrarLibros(Model modelo) {
+     public String mostrarAlumnos(Model modelo) {
         List<Alumno> alumnos = repo.findAll();
         modelo.addAttribute("alumnos", alumnos);
         return "alumnos_tabla";
     }
+     
 }

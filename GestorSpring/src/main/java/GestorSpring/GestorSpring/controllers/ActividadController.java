@@ -26,10 +26,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 
-/**
- *
- * @author Syzer
- */
+
 @RestController
 @RequestMapping("/actividades")
 public class ActividadController {
