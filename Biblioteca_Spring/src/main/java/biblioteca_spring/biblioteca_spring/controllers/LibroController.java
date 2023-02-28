@@ -72,20 +72,19 @@ public class LibroController {
 
     //Listar todos los libros de una categoría concreta que se le pasa por la url
     @GetMapping("/categoria/{categoria}")
-    public ResponseEntity<List<HashMap<String, Object>>> getLibrosCategoria(@PathVariable String categoria) {
+    public ResponseEntity<List<Libro>> getLibrosCategoria(@PathVariable String categoria) {
         List<Libro> libros = repo.findAll();
+        List<Libro> librosCategoria = new ArrayList<>();
         if (!libros.isEmpty()) {
-            List<HashMap<String, Object>> librosResumen = new ArrayList<>();
+            
             for (Libro libro : libros) {
                 if (libro.getCategoria().toLowerCase().equals(categoria.toLowerCase())) {
 
-                    HashMap<String, Object> libroResumen = new HashMap<>();
-                    libroResumen.put("id", libro.getId());
-                    libroResumen.put("titulo", libro.getTitulo());
-                    librosResumen.add(libroResumen);
+                    
+                    librosCategoria.add(libro);
                 }
             }
-            return new ResponseEntity<List<HashMap<String, Object>>>(librosResumen, HttpStatus.OK);
+            return new ResponseEntity<List<Libro>>(librosCategoria, HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
@@ -93,20 +92,18 @@ public class LibroController {
 
     //Listar todos los libros de un autor concreto que se le pasa por la url​
     @GetMapping("/autor/{autor}")
-    public ResponseEntity<List<HashMap<String, Object>>> getLibrosAutor(@PathVariable String autor) {
+    public ResponseEntity<List<Libro>> getLibrosAutor(@PathVariable String autor) {
         List<Libro> libros = repo.findAll();
+        List<Libro> librosAutor = new ArrayList<>();
         if (!libros.isEmpty()) {
-            List<HashMap<String, Object>> librosResumen = new ArrayList<>();
+        
             for (Libro libro : libros) {
                 if (libro.getAutor().toLowerCase().equals(autor.toLowerCase())) {
 
-                    HashMap<String, Object> libroResumen = new HashMap<>();
-                    libroResumen.put("id", libro.getId());
-                    libroResumen.put("titulo", libro.getTitulo());
-                    librosResumen.add(libroResumen);
+                    librosAutor.add(libro);
                 }
             }
-            return new ResponseEntity<List<HashMap<String, Object>>>(librosResumen, HttpStatus.OK);
+            return new ResponseEntity<List<Libro>>(librosAutor, HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
